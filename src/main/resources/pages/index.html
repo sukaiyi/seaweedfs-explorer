@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Seaweedfs Explorer</title>
+    <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+    <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body style="background-color: #F2F2F2;">
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div id="datFile" class="layui-btn-group">
+    </div>
+    <table id="datTable" lay-filter="datTable-filter"></table>
+</div>
+
+<script>
+    layui.use('table', function () {
+        const table = layui.table;
+        table.render({
+            id: "datTable",
+            elem: '#datTable',
+            toolbar: '<div>请选择一个数据文件</div>',
+            where: {file: ""},
+            title: '5.dat',
+            limits: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+            url: '/datfile',
+            autoSort: false,
+            page: true,
+            cols: [[
+                {field: 'fileId', title: 'File Id',},
+                {field: 'name', title: 'File Name', sort: true},
+                {field: 'dataSize', title: 'Data Size', width: 120, sort: true},
+                {field: 'flags', title: 'Flags', width: 80},
+                {field: 'mime', title: 'Mime',},
+                {field: 'pairs', title: 'Pairs',},
+                {field: 'lastModified', title: 'Last Modified', sort: true},
+                {field: 'ttl', title: 'TTL', width: 80},
+                {field: 'checkSum', title: 'Check Sum',}
+            ]]
+        });
+
+        table.on('sort(datTable-filter)', function (obj) {
+            table.reload('datTable', {
+                initSort: obj,
+                where: {
+                    sortBy: obj.field,
+                    order: obj.type
+                }
+            });
+        });
+    });
+
+    axios.get('/filelist')
+        .then(function (response) {
+            const data = response.data;
+            const view = document.getElementById('datFile');
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += '<button type="button" onclick="switchDatFile(\'' + data[i] + '\')" class="layui-btn layui-btn-sm">' + data[i] + '</button>';
+            }
+            view.innerHTML = html;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    function switchDatFile(datFile) {
+        layui.table.reload('datTable', {
+            where: {
+                file: datFile
+            },
+            toolbar: '<div>' + datFile + '</div>'
+        });
+    }
+</script>
+</body>
+</html>
