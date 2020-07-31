@@ -24,10 +24,13 @@
             toolbar: '<div>请选择一个数据文件</div>',
             where: {file: ""},
             title: '5.dat',
-            limits: [10, 15, 20, 25, 30, 35, 40, 45, 50],
             url: '/datfile',
             autoSort: false,
-            page: true,
+            page: {
+                groups: 10,
+                limit: 10,
+                limits: [10, 15, 20, 25, 30, 35, 40, 45, 50],
+            },
             cols: [[
                 {field: 'fileId', title: 'File Id',},
                 {field: 'name', title: 'File Name', sort: true},
@@ -71,7 +74,10 @@
             where: {
                 file: datFile
             },
-            toolbar: '<div>' + datFile + '</div>'
+            toolbar: '<div>' + datFile + '</div>',
+            page: {
+                curr: 1
+            },
         });
     }
 </script>
