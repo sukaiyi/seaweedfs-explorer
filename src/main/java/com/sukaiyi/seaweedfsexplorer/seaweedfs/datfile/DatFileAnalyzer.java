@@ -3,6 +3,7 @@ package com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.FileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.utils.FileIdFormatUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -141,7 +142,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= analyzeState.data.getNameSize()) {
-                        String name = new String(analyzeState.buff, 0, analyzeState.bufPos);
+                        String name = new String(analyzeState.buff, 0, analyzeState.bufPos, StandardCharsets.UTF_8);
                         analyzeState.data.setName(name);
                         analyzeState.state = MIME_SIZE;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -203,7 +204,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= analyzeState.data.getPairsSize()) {
-                        String pairs = new String(analyzeState.buff, 0, analyzeState.bufPos);
+                        String pairs = new String(analyzeState.buff, 0, analyzeState.bufPos, StandardCharsets.UTF_8);
                         analyzeState.data.setPairs(pairs);
                         analyzeState.state = LAST_MODIFIED;
                         analyzeState.readThisData += analyzeState.bufPos;
