@@ -1,6 +1,7 @@
 package com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile;
 
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.FileAnalyzer;
+import com.sukaiyi.seaweedfsexplorer.utils.ByteUtils;
 import com.sukaiyi.seaweedfsexplorer.utils.FileIdFormatUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -53,9 +54,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= COOKIE_SIZE) {
-                        String cookie = IntStream.range(0, analyzeState.bufPos)
-                                .mapToObj(e -> String.format("%02x", analyzeState.buff[e]))
-                                .collect(Collectors.joining());
+                        String cookie = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setCookie(FileIdFormatUtils.format(cookie));
                         analyzeState.state = ID;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -65,9 +64,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                 case ID:
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= ID_SIZE) {
-                        String id = IntStream.range(0, analyzeState.bufPos)
-                                .mapToObj(e -> String.format("%02x", analyzeState.buff[e]))
-                                .collect(Collectors.joining());
+                        String id = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setId(FileIdFormatUtils.format(id));
                         analyzeState.state = TOTAL_SIZE;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -77,9 +74,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                 case TOTAL_SIZE:
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= TOTAL_SIZE_SIZE) {
-                        long totalSize = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long totalSize = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setSize(totalSize);
                         analyzeState.state = totalSize > 0 ? DATA_SIZE : CHECK_SUM;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -89,9 +84,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                 case DATA_SIZE:
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= DATA_SIZE_SIZE) {
-                        long dataSize = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long dataSize = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setDataSize(dataSize);
                         analyzeState.state = DATA;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -126,9 +119,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= NAME_SIZE_SIZE) {
-                        long nameSize = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long nameSize = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setNameSize((int) nameSize);
                         analyzeState.state = NAME;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -157,9 +148,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= MIME_SIZE_SIZE) {
-                        long mimeSize = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long mimeSize = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setMimeSize((int) mimeSize);
                         analyzeState.state = MIME;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -188,9 +177,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= PAIRS_SIZE_SIZE) {
-                        long pairsSize = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long pairsSize = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setPairsSize((int) pairsSize);
                         analyzeState.state = PAIRS;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -219,9 +206,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= LAST_MODIFIED_SIZE) {
-                        long lastModified = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long lastModified = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setLastModified(lastModified);
                         analyzeState.state = TTL;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -247,9 +232,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                 case CHECK_SUM:
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= CHECK_SUM_SIZE) {
-                        String checkSum = IntStream.range(0, analyzeState.bufPos)
-                                .mapToObj(e -> String.format("%02x", analyzeState.buff[e]))
-                                .collect(Collectors.joining());
+                        String checkSum = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setCheckSum(checkSum);
                         analyzeState.state = APPEND_AT_NS;
                         analyzeState.readThisData += analyzeState.bufPos;
@@ -263,9 +246,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= APPEND_AT_NS_SIZE) {
-                        long appendAtNs = IntStream.range(0, analyzeState.bufPos)
-                                .mapToLong(e -> Byte.toUnsignedInt(analyzeState.buff[e]))
-                                .reduce(0, (left, right) -> left * 256 + right);
+                        long appendAtNs = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setAppendAtNs(appendAtNs);
                         analyzeState.state = PADDING;
                         analyzeState.readThisData += analyzeState.bufPos;
