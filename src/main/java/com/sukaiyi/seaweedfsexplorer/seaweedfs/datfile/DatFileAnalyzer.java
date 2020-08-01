@@ -17,19 +17,19 @@ import static com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileAnalyzer.St
  */
 public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
 
-    private static final int SUPER_BLOCK_SIZE = 8;
-    private static final int COOKIE_SIZE = 8;
-    private static final int ID_SIZE = 4;
-    private static final int TOTAL_SIZE_SIZE = 4;
-    private static final int DATA_SIZE_SIZE = 4;
-    private static final int FLAG_SIZE = 1;
-    private static final int NAME_SIZE_SIZE = 1;
-    private static final int MIME_SIZE_SIZE = 1;
-    private static final int PAIRS_SIZE_SIZE = 2;
-    private static final int LAST_MODIFIED_SIZE = 5;
-    private static final int TTL_SIZE = 2;
-    private static final int CHECK_SUM_SIZE = 4;
-    private static final int APPEND_AT_NS_SIZE = 8;
+    public static final int SUPER_BLOCK_SIZE = 8;
+    public static final int COOKIE_SIZE = 8;
+    public static final int ID_SIZE = 4;
+    public static final int TOTAL_SIZE_SIZE = 4;
+    public static final int DATA_SIZE_SIZE = 4;
+    public static final int FLAG_SIZE = 1;
+    public static final int NAME_SIZE_SIZE = 1;
+    public static final int MIME_SIZE_SIZE = 1;
+    public static final int PAIRS_SIZE_SIZE = 2;
+    public static final int LAST_MODIFIED_SIZE = 5;
+    public static final int TTL_SIZE = 2;
+    public static final int CHECK_SUM_SIZE = 4;
+    public static final int APPEND_AT_NS_SIZE = 8;
 
     private final ThreadLocal<AnalyzeState> analyzeStateLocal = ThreadLocal.withInitial(AnalyzeState::new);
     private final ThreadLocal<Integer> versionLocal = ThreadLocal.withInitial(() -> 3); // 从 SUPER_BLOCK 中读取版本信息

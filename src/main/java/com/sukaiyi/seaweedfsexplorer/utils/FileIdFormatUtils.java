@@ -17,6 +17,9 @@ public class FileIdFormatUtils {
         while (end > 0 && fileId.charAt(end) == '0' && fileId.charAt(end - 1) == '0') {
             end -= 2;
         }
+        if (end <= 0) {
+            return "";
+        }
         return fileId.substring(start, end + 1);
     }
 }

@@ -8,7 +8,6 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.Data;
 
 import java.io.File;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandler.LayUITableData<DatFileHttpHandler.DatFileModelForLayUI>> {
 
-    private final Map<String, List<DatFileModel>> cache = new HashMap<>();
+    public static final Map<String, List<DatFileModel>> CACHE = new HashMap<>();
 
     @Override
     protected LayUITableData<DatFileModelForLayUI> jsonResult(ChannelHandlerContext ctx, FullHttpRequest request) {
@@ -39,11 +38,11 @@ public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandl
         }
         String datPath = workPath + File.separator + fileName;
         boolean refresh = Boolean.parseBoolean(paramMap.get("refresh"));
-        if (cache.get(datPath) == null || refresh) {
+        if (CACHE.get(datPath) == null || refresh) {
             List<DatFileModel> data = new DatFileAnalyzer().exec(datPath);
-            cache.put(datPath, data);
+            CACHE.put(datPath, data);
         }
-        List<DatFileModel> total = cache.get(datPath);
+        List<DatFileModel> total = CACHE.get(datPath);
 
         int page = Integer.parseInt(paramMap.getOrDefault("page", "1"));
         int limit = Integer.parseInt(paramMap.getOrDefault("limit", "15"));
@@ -60,6 +59,7 @@ public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandl
                 .limit(limit)
                 .map(this::convert)
                 .peek(e -> e.setFileId(volumeId + "," + e.getFileId()))
+                .peek(e -> e.setDatFile(fileName))
                 .collect(Collectors.toList());
         LayUITableData<DatFileModelForLayUI> ret = new LayUITableData<>();
         ret.setCode(0);
@@ -71,6 +71,7 @@ public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandl
     private DatFileModelForLayUI convert(DatFileModel datFileModel) {
         DatFileModelForLayUI ret = new DatFileModelForLayUI();
         ret.setFileId(datFileModel.getId() + datFileModel.getCookie());
+        ret.setId(datFileModel.getId());
         ret.setDataSize(DataSizeUtils.humanize(datFileModel.getDataSize()));
         ret.setFlags(datFileModel.getFlags());
         ret.setName(datFileModel.getName());
@@ -98,7 +99,9 @@ public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandl
 
     @Data
     public static final class DatFileModelForLayUI {
+        private String datFile;
         private String fileId;
+        private String id;
         private String dataSize;
         private byte flags;
         private String name;

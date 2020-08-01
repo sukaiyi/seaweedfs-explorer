@@ -15,6 +15,10 @@
     <table id="datTable" lay-filter="datTable-filter"></table>
 </div>
 
+<script type="text/html" id="fileIdTpl">
+    <a href="/download?file={{d.datFile}}&id={{d.id}}" target="_blank" class="layui-table-link">{{d.fileId}}</a>
+</script>
+
 <script>
     layui.use('table', function () {
         const table = layui.table;
@@ -32,7 +36,7 @@
                 limits: [10, 15, 20, 25, 30, 35, 40, 45, 50],
             },
             cols: [[
-                {field: 'fileId', title: 'File Id',},
+                {field: 'fileId', title: 'File Id', templet: '#fileIdTpl'},
                 {field: 'name', title: 'File Name', sort: true},
                 {field: 'dataSize', title: 'Data Size', width: 120, sort: true},
                 {field: 'flags', title: 'Flags', width: 80},
@@ -40,7 +44,7 @@
                 {field: 'pairs', title: 'Pairs',},
                 {field: 'lastModified', title: 'Last Modified', sort: true},
                 {field: 'ttl', title: 'TTL', width: 80},
-                {field: 'checkSum', title: 'Check Sum',}
+                {field: 'checkSum', title: 'Check Sum',},
             ]]
         });
 

@@ -20,15 +20,15 @@ import java.util.function.Supplier;
 @Slf4j
 public class ServerBootstrapConfig {
 
-    private static final int websocketPort = 35672;
+    private static final int port = 35672;
 
     public ServerBootstrap httpServerBootstrap() {
         return setupServer(HttpChannelInitializer::new, future -> {
             if (future.isSuccess()) {
-                log.info("websocketBasedServerBootstrap start at {} success", websocketPort);
+                log.info("httpServer start at port {} success.\n visit http://127.0.0.1:{}/index.html", port, port);
             } else {
                 Throwable cause = future.cause();
-                log.error("websocketBasedServerBootstrap start at {} failed", websocketPort, cause);
+                log.error("httpServer start at port {} failed", port, cause);
             }
         });
     }
@@ -41,7 +41,7 @@ public class ServerBootstrapConfig {
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE);
-        serverBootstrap.bind(websocketPort).addListener(resultConsumer::accept);
+        serverBootstrap.bind(port).addListener(resultConsumer::accept);
         return serverBootstrap;
     }
 }
