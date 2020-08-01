@@ -10,4 +10,9 @@ public class IndexHttpHandler extends AbstractStaticHttpHandler {
     protected String resource() {
         return "pages/index.html";
     }
+
+    @Override
+    protected boolean cacheable() {
+        return true;
+    }
 }
