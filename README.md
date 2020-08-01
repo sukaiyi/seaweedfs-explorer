@@ -21,5 +21,5 @@ java -jar seaweedfs-explorer-1.0-SNAPSHOT-shaded.jar
 # 浏览器打开 http://127.0.0.1:35672/index.html
 ```
 
-![image-20200731230815159](https://github.com/sukaiyi/seaweedfs-explorer/raw/master/README.assets/image-20200731230815159.png)
+![image-20200731230815159](https://gitee.com/sukaiyi/seaweedfs-explorer/raw/master/README.assets/image-20200731230815159.png)
 
