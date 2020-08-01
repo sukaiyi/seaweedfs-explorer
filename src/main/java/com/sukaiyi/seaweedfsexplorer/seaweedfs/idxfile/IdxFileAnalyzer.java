@@ -32,7 +32,7 @@ public class IdxFileAnalyzer implements FileAnalyzer<IdxFileModel> {
                     if (analyzeState.bufPos >= ID_SIZE) {
                         String id = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data = new IdxFileModel();
-                        analyzeState.data.setId(FileIdFormatUtils.format(id));
+                        analyzeState.data.setId(FileIdFormatUtils.formatId(id));
                         analyzeState.state = OFFSET;
                         analyzeState.bufPos = 0;
                     }
@@ -53,7 +53,10 @@ public class IdxFileAnalyzer implements FileAnalyzer<IdxFileModel> {
                         analyzeState.data.setSize(size);
                         analyzeState.state = ID;
                         analyzeState.bufPos = 0;
-                        result.add(analyzeState.data);
+                        // 等于0的文件是删除的
+                        if (analyzeState.data.getOffset() != 0 && analyzeState.data.getSize() != 0) {
+                            result.add(analyzeState.data);
+                        }
                         analyzeState.data = null;
                     }
                     break;

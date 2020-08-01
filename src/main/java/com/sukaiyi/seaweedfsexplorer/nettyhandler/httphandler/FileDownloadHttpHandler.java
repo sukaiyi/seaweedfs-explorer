@@ -3,7 +3,6 @@ package com.sukaiyi.seaweedfsexplorer.nettyhandler.httphandler;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileModel;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileModel;
-import com.sukaiyi.seaweedfsexplorer.utils.BinarySearchUtils;
 import com.sukaiyi.seaweedfsexplorer.utils.UrlEncoder;
 import com.sukaiyi.seaweedfsexplorer.utils.WorkDirUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -57,7 +56,12 @@ public class FileDownloadHttpHandler implements HttpHandler {
 
         // find DatFileModel
         List<DatFileModel> datFileModels = DatFileHttpHandler.CACHE.get(datFile);
-        DatFileModel dat = BinarySearchUtils.search(datFileModels, id, DatFileModel::getId);
+        DatFileModel dat = datFileModels.stream()
+                .filter(e -> Objects.equals(e.getId(), id))
+                .filter(e -> e.getSize() > 0)
+                .filter(e -> e.getDataSize() > 0)
+                .findFirst()
+                .orElse(null);
         if (dat == null) {
             return false;
         }

@@ -55,7 +55,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= COOKIE_SIZE) {
                         String cookie = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
-                        analyzeState.data.setCookie(FileIdFormatUtils.format(cookie));
+                        analyzeState.data.setCookie(FileIdFormatUtils.formatCookie(cookie));
                         analyzeState.state = ID;
                         analyzeState.readThisData += analyzeState.bufPos;
                         analyzeState.bufPos = 0;
@@ -65,7 +65,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= ID_SIZE) {
                         String id = ByteUtils.byteToHexString(analyzeState.buff, 0, analyzeState.bufPos);
-                        analyzeState.data.setId(FileIdFormatUtils.format(id));
+                        analyzeState.data.setId(FileIdFormatUtils.formatId(id));
                         analyzeState.state = TOTAL_SIZE;
                         analyzeState.readThisData += analyzeState.bufPos;
                         analyzeState.bufPos = 0;

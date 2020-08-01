@@ -6,20 +6,27 @@ package com.sukaiyi.seaweedfsexplorer.utils;
  */
 public class FileIdFormatUtils {
 
-    public static String format(String fileId) {
-        int length = fileId.length();
+    public static String formatId(String id) {
+        int length = id.length();
         int start = 0;
-        while (start < length - 1 && fileId.charAt(start) == '0' && fileId.charAt(start + 1) == '0') {
+        while (start < length - 1 && id.charAt(start) == '0' && id.charAt(start + 1) == '0') {
             start += 2;
         }
 
-        int end = fileId.length() - 1;
-        while (end > 0 && fileId.charAt(end) == '0' && fileId.charAt(end - 1) == '0') {
+
+        return id.substring(start);
+    }
+
+    public static String formatCookie(String cookie) {
+        int end = cookie.length() - 1;
+        while (end > 0 && cookie.charAt(end) == '0' && cookie.charAt(end - 1) == '0') {
             end -= 2;
         }
         if (end <= 0) {
             return "";
         }
-        return fileId.substring(start, end + 1);
+        return cookie.substring(0, end + 1);
     }
+
+
 }
