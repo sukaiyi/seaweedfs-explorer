@@ -16,7 +16,8 @@
 </div>
 
 <script type="text/html" id="fileIdTpl">
-    <a href="/download?file={{d.datFile}}&id={{d.id}}" target="_blank" class="layui-table-link">{{d.fileId}}</a>
+    <a href="javascript:void(0);" onclick="openLayer('{{d.name}}','/download?file={{d.datFile}}&id={{d.id}}')"
+       class="layui-table-link">{{d.fileId}}</a>
 </script>
 
 <script>
@@ -78,11 +79,24 @@
             where: {
                 file: datFile
             },
-            toolbar: '<div>' + datFile + '</div>',
+            toolbar: '<div>{{d.where.file}}</div>',
             page: {
                 curr: 1
             },
         });
+    }
+
+    function openLayer(title, url) {
+        const index = layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            area: ['1000px', '700px'],
+            maxmin: true,
+            content: url
+        });
+        const body = layer.getChildFrame('body', index);
+        console.log(body.html());
     }
 </script>
 </body>

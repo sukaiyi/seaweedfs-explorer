@@ -3,6 +3,7 @@ package com.sukaiyi.seaweedfsexplorer.nettyhandler.httphandler;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileModel;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileModel;
+import com.sukaiyi.seaweedfsexplorer.utils.ContentTypeUtils;
 import com.sukaiyi.seaweedfsexplorer.utils.UrlEncoder;
 import com.sukaiyi.seaweedfsexplorer.utils.WorkDirUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -67,8 +68,13 @@ public class FileDownloadHttpHandler implements HttpHandler {
         }
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
+
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, dat.getDataSize());
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, Optional.of(dat).map(DatFileModel::getMime).orElse("application/octet-stream"));
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, Optional.of(dat)
+                .map(DatFileModel::getName)
+                .map(String::toLowerCase)
+                .map(ContentTypeUtils::chooseForFileName)
+                .orElse("application/octet-stream"));
         response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION, String.format("filename=\"%s\"", Optional.of(dat)
                 .map(DatFileModel::getName)
                 .map(UrlEncoder::encode)
