@@ -13,10 +13,10 @@ mvn clean package -DskipTests
 
 # 启动 方法一
 cd target
-java -jar seaweedfs-explorer-1.0-SNAPSHOT-shaded.jar <seaweedfs data dir>
-# 方法二 将jar包拷贝到 seaweedfs 数据目录下（dat/idx 同级目录），可省略启动参数
+java -jar seaweedfs-explorer-1.0.jar <seaweedfs data dir>
+# 方法二 将 jar 包拷贝到 seaweedfs 数据目录下（dat/idx 同级目录），可省略启动参数
 cd <seaweedfs data dir>
-java -jar seaweedfs-explorer-1.0-SNAPSHOT-shaded.jar
+java -jar seaweedfs-explorer-1.0.jar
 
 # 浏览器打开 http://127.0.0.1:35672/index.html
 ```
