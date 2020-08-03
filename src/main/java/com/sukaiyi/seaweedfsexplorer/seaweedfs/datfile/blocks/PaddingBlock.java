@@ -61,7 +61,7 @@ public class PaddingBlock implements Block<Instant> {
         dat.setLastModified(Optional.of(LastModifiedBlock.class).map(blockAlreadyDecode::get).map(Block::getDecodedData).map(e -> (Instant) e).map(e -> e.toEpochMilli() / 1000).orElse(0L));
         dat.setTtl(Optional.of(TtlBlock.class).map(blockAlreadyDecode::get).map(Block::getDecodedData).map(e -> (byte[]) e).orElse(null));
         dat.setCheckSum(Optional.of(CheckSumBlock.class).map(blockAlreadyDecode::get).map(Block::getDecodedData).map(e -> (String) e).orElse(null));
-        dat.setAppendAtNs(Optional.of(AppendAtNsBlock.class).map(blockAlreadyDecode::get).map(Block::getDecodedData).map(e -> (Instant) e).map(e -> e.toEpochMilli()).orElse(0L));
+        dat.setAppendAtNs(Optional.of(AppendAtNsBlock.class).map(blockAlreadyDecode::get).map(Block::getDecodedData).map(e -> (Long) e).orElse(0L));
         ret.add(dat);
 
         Block superBlock = blockAlreadyDecode.get(SuperBlock.class);

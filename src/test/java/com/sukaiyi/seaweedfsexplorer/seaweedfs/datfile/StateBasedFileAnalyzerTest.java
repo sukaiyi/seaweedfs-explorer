@@ -14,6 +14,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class StateBasedFileAnalyzerTest {
 
     @Test
+    void testStateBasedDatFile() {
+        StateBasedDatFileAnalyzer stateBasedDatFileAnalyzer = new StateBasedDatFileAnalyzer();
+        List<DatFileModel> stateBasedResult = stateBasedDatFileAnalyzer.exec("C:\\Users\\HT-Dev\\Downloads\\weed\\data-ins1\\25.dat");
+    }
+
+    @Test
+    void testNormalDatFile() {
+        DatFileAnalyzer normalAnalyzer = new DatFileAnalyzer();
+        List<DatFileModel> normalResult = normalAnalyzer.exec("C:\\Users\\HT-Dev\\Downloads\\weed\\data-ins1\\5.dat");
+    }
+
+    @Test
     void testDatFile() {
         StateBasedDatFileAnalyzer stateBasedDatFileAnalyzer = new StateBasedDatFileAnalyzer();
         List<DatFileModel> stateBasedResult = stateBasedDatFileAnalyzer.exec("C:\\Users\\HT-Dev\\Downloads\\weed\\data-ins1\\5.dat");

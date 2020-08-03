@@ -12,11 +12,11 @@ import java.util.Optional;
  * @author sukaiyi
  * @date 2020/08/03
  */
-public class AppendAtNsBlock implements Block<Instant> {
+public class AppendAtNsBlock implements Block<Long> {
 
     public static final String NAME = "AppendAtNsBlock";
 
-    private Instant data;
+    private Long appendAtNs;
 
     @Override
     public String name() {
@@ -40,13 +40,12 @@ public class AppendAtNsBlock implements Block<Instant> {
 
     @Override
     public void decode(Map<Class<?>, Block<?>> blockAlreadyDecode, byte[] bytes, int start, int len, boolean finished) {
-        long appendAtNs = ByteUtils.byteToUnsignedLong(bytes, start, len);
-        data = Instant.ofEpochMilli(appendAtNs / 1000 / 1000);
+        this.appendAtNs = ByteUtils.byteToUnsignedLong(bytes, start, len);
     }
 
     @Override
-    public Instant getDecodedData() {
-        return data;
+    public Long getDecodedData() {
+        return appendAtNs;
     }
 
     @Override

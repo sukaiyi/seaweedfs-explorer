@@ -34,7 +34,9 @@ public class MimeBlock implements Block<String> {
 
     @Override
     public void decode(Map<Class<?>, Block<?>> blockAlreadyDecode, byte[] bytes, int start, int len, boolean finished) {
-        this.mime = new String(bytes, start, len, StandardCharsets.UTF_8);
+        if (len > 0) {
+            this.mime = new String(bytes, start, len, StandardCharsets.UTF_8);
+        }
     }
 
     @Override

@@ -36,19 +36,32 @@ public abstract class StateBasedFileAnalyzer<T> implements FileAnalyzer<T> {
                 analyzeState.read = 0L;
                 analyzeState.bufPos = 0;
             }
-            int read = MathUtils.min((long) count - i, (long) analyzeState.buff.length - analyzeState.bufPos, analyzeState.size - analyzeState.read).intValue();
-            System.arraycopy(bytes, i, analyzeState.buff, analyzeState.bufPos, read);
-            i += read;
-            analyzeState.bufPos += read;
-            analyzeState.read += read;
+            long left = analyzeState.size - analyzeState.read;
+            if (left > analyzeState.buff.length) { // 如果剩余未读字节数大于了缓冲区大小，就不拷贝到缓冲区
+                int read = MathUtils.min((long) count - i, analyzeState.size - analyzeState.read).intValue();
+                i += read;
+                analyzeState.read += read;
+                if (analyzeState.read - analyzeState.size == 0) { // 数读取完了
+                    block.decode(blockAlreadyDecode, bytes, i - read, read, true);
+                    analyzeState.state = block.next(blockAlreadyDecode, result);
+                } else {
+                    block.decode(blockAlreadyDecode, bytes, i - read, read, false);
+                }
+            } else { // 拷贝到缓冲区
+                int read = MathUtils.min((long) count - i, (long) analyzeState.buff.length - analyzeState.bufPos, analyzeState.size - analyzeState.read).intValue();
+                System.arraycopy(bytes, i, analyzeState.buff, analyzeState.bufPos, read);
+                i += read;
+                analyzeState.bufPos += read;
+                analyzeState.read += read;
 
-            if (analyzeState.read - analyzeState.size == 0) { // 数读取完了
-                block.decode(blockAlreadyDecode, analyzeState.buff, 0, analyzeState.bufPos, true);
-                analyzeState.bufPos = 0;
-                analyzeState.state = block.next(blockAlreadyDecode, result);
-            } else if (analyzeState.buff.length - analyzeState.bufPos == 0) { // 缓冲区满了
-                block.decode(blockAlreadyDecode, analyzeState.buff, 0, analyzeState.bufPos, false);
-                analyzeState.bufPos = 0;
+                if (analyzeState.read - analyzeState.size == 0) { // 数读取完了
+                    block.decode(blockAlreadyDecode, analyzeState.buff, 0, analyzeState.bufPos, true);
+                    analyzeState.bufPos = 0;
+                    analyzeState.state = block.next(blockAlreadyDecode, result);
+                } else if (analyzeState.buff.length - analyzeState.bufPos == 0) { // 缓冲区满了
+                    block.decode(blockAlreadyDecode, analyzeState.buff, 0, analyzeState.bufPos, false);
+                    analyzeState.bufPos = 0;
+                }
             }
         }
     }

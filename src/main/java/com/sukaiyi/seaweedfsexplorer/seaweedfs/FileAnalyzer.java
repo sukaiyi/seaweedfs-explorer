@@ -18,7 +18,7 @@ public interface FileAnalyzer<T> {
         List<T> ts = new ArrayList<>();
 
         try (InputStream os = new FileInputStream(file)) {
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[1024 * 256];
             int count;
             while ((count = os.read(buffer)) > 0) {
                 decode(buffer, count, ts);
