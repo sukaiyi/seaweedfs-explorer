@@ -1,7 +1,7 @@
 package com.sukaiyi.seaweedfsexplorer.nettyhandler.httphandler;
 
-import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileModel;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.StateBasedDatFileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.utils.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -39,7 +39,7 @@ public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandl
         String datPath = workPath + File.separator + fileName;
         boolean refresh = Boolean.parseBoolean(paramMap.get("refresh"));
         if (CACHE.get(datPath) == null || refresh) {
-            List<DatFileModel> data = new DatFileAnalyzer().exec(datPath);
+            List<DatFileModel> data = new StateBasedDatFileAnalyzer().exec(datPath);
             CACHE.put(datPath, data);
         }
         List<DatFileModel> total = CACHE.get(datPath);

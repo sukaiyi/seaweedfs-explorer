@@ -1,8 +1,12 @@
 package com.sukaiyi.seaweedfsexplorer.nettyhandler.httphandler;
 
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileModel;
-import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileAnalyzer;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.blocks.CookieBlock;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.blocks.DataSizeBlock;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.blocks.IdBlock;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.blocks.TotalSizeBlock;
 import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileModel;
+import com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.StateBasedIdxFileAnalyzer;
 import com.sukaiyi.seaweedfsexplorer.utils.ContentTypeUtils;
 import com.sukaiyi.seaweedfsexplorer.utils.UrlEncoder;
 import com.sukaiyi.seaweedfsexplorer.utils.WorkDirUtils;
@@ -16,7 +20,6 @@ import java.io.RandomAccessFile;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileAnalyzer.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -46,7 +49,7 @@ public class FileDownloadHttpHandler implements HttpHandler {
         String idxFile = datFile.substring(0, datFile.length() - ".dat".length()) + ".idx";
 
         if (cache.get(idxFile) == null) {
-            List<IdxFileModel> data = new IdxFileAnalyzer().exec(idxFile);
+            List<IdxFileModel> data = new StateBasedIdxFileAnalyzer().exec(idxFile);
             cache.put(idxFile, data.stream().collect(Collectors.toMap(IdxFileModel::getId, e -> e)));
         }
         Map<String, IdxFileModel> idxFileMap = cache.get(idxFile);
@@ -87,7 +90,7 @@ public class FileDownloadHttpHandler implements HttpHandler {
             RandomAccessFile randomAccessFile = new RandomAccessFile(datFile, "r");
             ctx.write(new ChunkedFile(
                     randomAccessFile,
-                    idx.getOffset() + COOKIE_SIZE + ID_SIZE + TOTAL_SIZE_SIZE + DATA_SIZE_SIZE,
+                    idx.getOffset() + CookieBlock.SIZE + IdBlock.SIZE + TotalSizeBlock.SIZE + DataSizeBlock.SIZE,
                     dat.getDataSize(),
                     8192
             ));

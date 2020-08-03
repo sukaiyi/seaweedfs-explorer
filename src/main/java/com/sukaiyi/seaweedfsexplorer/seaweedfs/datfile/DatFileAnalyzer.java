@@ -6,8 +6,6 @@ import com.sukaiyi.seaweedfsexplorer.utils.FileIdFormatUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileAnalyzer.State.*;
 
@@ -15,6 +13,7 @@ import static com.sukaiyi.seaweedfsexplorer.seaweedfs.datfile.DatFileAnalyzer.St
  * @author sukaiyi
  * @date 2020/07/30
  */
+@Deprecated
 public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
 
     public static final int SUPER_BLOCK_SIZE = 8;

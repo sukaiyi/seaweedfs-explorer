@@ -23,4 +23,23 @@ public class ReflectUtils {
         }
         return null;
     }
+
+    public static Object getFieldValue(Object ins, Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(ins);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

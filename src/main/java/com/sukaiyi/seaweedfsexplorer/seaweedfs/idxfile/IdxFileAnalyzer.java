@@ -12,6 +12,7 @@ import static com.sukaiyi.seaweedfsexplorer.seaweedfs.idxfile.IdxFileAnalyzer.St
  * @author sukaiyi
  * @date 2020/08/01
  */
+@Deprecated
 public class IdxFileAnalyzer implements FileAnalyzer<IdxFileModel> {
 
     private static final int ID_SIZE = 8;
