@@ -79,6 +79,9 @@ public class FileDownloadHttpHandler implements HttpHandler {
                 .map(DatFileModel::getName)
                 .map(UrlEncoder::encode)
                 .orElse("unknown")));
+        if (dat.isCompressed()) {
+            response.headers().set(HttpHeaderNames.CONTENT_ENCODING, "gzip");
+        }
         ctx.write(response);
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(datFile, "r");
