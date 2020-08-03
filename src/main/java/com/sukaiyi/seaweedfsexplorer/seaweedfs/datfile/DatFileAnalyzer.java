@@ -112,7 +112,7 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     break;
                 case NAME_SIZE:
-                    if ((analyzeState.data.getFlags() & 0x02) == 0) { // FlagHasName
+                    if (!analyzeState.data.hasName()) { // FlagHasName
                         analyzeState.state = MIME_SIZE;
                         analyzeState.bufPos = 0;
                         break;
@@ -141,8 +141,8 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     }
                     break;
                 case MIME_SIZE:
-                    if ((analyzeState.data.getFlags() & 0x04) == 0) { // FlagHasMime
-                        analyzeState.state = PAIRS_SIZE;
+                    if (!analyzeState.data.hasMime()) { // FlagHasMime
+                        analyzeState.state = LAST_MODIFIED;
                         analyzeState.bufPos = 0;
                         break;
                     }
@@ -157,21 +157,36 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     break;
                 case MIME:
                     if (analyzeState.data.getMimeSize() <= 0) {
-                        analyzeState.state = PAIRS_SIZE;
+                        analyzeState.state = LAST_MODIFIED;
                         break;
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= analyzeState.data.getMimeSize()) {
                         String mime = new String(analyzeState.buff, 0, analyzeState.bufPos);
                         analyzeState.data.setMime(mime);
+                        analyzeState.state = LAST_MODIFIED;
+                        analyzeState.readThisData += analyzeState.bufPos;
+                        analyzeState.bufPos = 0;
+                    }
+                    break;
+                case LAST_MODIFIED:
+                    if (!analyzeState.data.hasLastModifiedDate()) { // FlagHasLastModifiedDate
+                        analyzeState.state = PAIRS_SIZE;
+                        analyzeState.bufPos = 0;
+                        break;
+                    }
+                    analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
+                    if (analyzeState.bufPos >= LAST_MODIFIED_SIZE) {
+                        long lastModified = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
+                        analyzeState.data.setLastModified(lastModified);
                         analyzeState.state = PAIRS_SIZE;
                         analyzeState.readThisData += analyzeState.bufPos;
                         analyzeState.bufPos = 0;
                     }
                     break;
                 case PAIRS_SIZE:
-                    if ((analyzeState.data.getFlags() & 0x20) == 0) { // FlagHasPairs
-                        analyzeState.state = LAST_MODIFIED;
+                    if (!analyzeState.data.hasPairs()) { // FlagHasPairs
+                        analyzeState.state = TTL;
                         analyzeState.bufPos = 0;
                         break;
                     }
@@ -186,35 +201,20 @@ public class DatFileAnalyzer implements FileAnalyzer<DatFileModel> {
                     break;
                 case PAIRS:
                     if (analyzeState.data.getPairsSize() <= 0) {
-                        analyzeState.state = LAST_MODIFIED;
+                        analyzeState.state = TTL;
                         break;
                     }
                     analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
                     if (analyzeState.bufPos >= analyzeState.data.getPairsSize()) {
                         String pairs = new String(analyzeState.buff, 0, analyzeState.bufPos, StandardCharsets.UTF_8);
                         analyzeState.data.setPairs(pairs);
-                        analyzeState.state = LAST_MODIFIED;
-                        analyzeState.readThisData += analyzeState.bufPos;
-                        analyzeState.bufPos = 0;
-                    }
-                    break;
-                case LAST_MODIFIED:
-                    if ((analyzeState.data.getFlags() & 0x08) == 0) { // FlagHasLastModifiedDate
-                        analyzeState.state = TTL;
-                        analyzeState.bufPos = 0;
-                        break;
-                    }
-                    analyzeState.buff[analyzeState.bufPos++] = bytes[i++];
-                    if (analyzeState.bufPos >= LAST_MODIFIED_SIZE) {
-                        long lastModified = ByteUtils.byteToUnsignedLong(analyzeState.buff, 0, analyzeState.bufPos);
-                        analyzeState.data.setLastModified(lastModified);
                         analyzeState.state = TTL;
                         analyzeState.readThisData += analyzeState.bufPos;
                         analyzeState.bufPos = 0;
                     }
                     break;
                 case TTL:
-                    if ((analyzeState.data.getFlags() & 0x10) == 0) { // FlagHasTtl
+                    if (!analyzeState.data.hasTtl()) { // FlagHasTtl
                         analyzeState.state = CHECK_SUM;
                         analyzeState.bufPos = 0;
                         break;
