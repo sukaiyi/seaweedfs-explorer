@@ -17,13 +17,13 @@ import java.util.Map;
  */
 public abstract class AbstractStaticHttpHandler implements HttpHandler {
 
-    private static final Map<String, String> responseCache = new HashMap<>();
+    private static final Map<String, String> RESPONSE_CACHE = new HashMap<>();
 
     @Override
     public boolean handle(ChannelHandlerContext ctx, FullHttpRequest request) {
         boolean cacheable = cacheable();
         String resource = resource();
-        String cachedResponse = responseCache.get(resource);
+        String cachedResponse = RESPONSE_CACHE.get(resource);
 
         if (!cacheable || cachedResponse == null) {
             try (InputStream is = AbstractStaticHttpHandler.class.getClassLoader().getResourceAsStream(resource())) {
@@ -38,7 +38,7 @@ public abstract class AbstractStaticHttpHandler implements HttpHandler {
                 }
                 cachedResponse = sb.toString();
                 if (cacheable) {
-                    responseCache.put(resource, cachedResponse);
+                    RESPONSE_CACHE.put(resource, cachedResponse);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,7 +57,17 @@ public abstract class AbstractStaticHttpHandler implements HttpHandler {
         }
     }
 
+    /**
+     * 指定该静态资源的访问路径
+     *
+     * @return 静态资源相对于resource目录的路径
+     */
     protected abstract String resource();
 
+    /**
+     * 该资源是否支持缓存，如果不支持缓存每次 http 请求时都会通过{@link ClassLoader#getResourceAsStream(String)}获取数据
+     *
+     * @return 该资源是否支持缓存
+     */
     protected abstract boolean cacheable();
 }

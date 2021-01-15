@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author sukaiyi
  * @date 2020/07/31
  */
-public class DatFileHttpHandler extends AbstractJSONHttpHandler<DatFileHttpHandler.LayUITableData<DatFileHttpHandler.DatFileModelForLayUI>> {
+public class DatFileHttpHandler extends AbstractJsonHttpHandler<DatFileHttpHandler.LayUITableData<DatFileHttpHandler.DatFileModelForLayUI>> {
 
     public static final Map<String, List<DatFileModel>> CACHE = new HashMap<>();
 

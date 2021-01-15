@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @author sukaiyi
  * @date 2020/07/31
  */
-public class FileListHttpHandler extends AbstractJSONHttpHandler<List<String>> {
+public class FileListHttpHandler extends AbstractJsonHttpHandler<List<String>> {
 
     @Override
     protected List<String> jsonResult(ChannelHandlerContext ctx, FullHttpRequest request) {

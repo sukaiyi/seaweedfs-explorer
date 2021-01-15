@@ -7,19 +7,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 /**
  * @author sukaiyi
  * @date 2020/07/31
  */
-public abstract class AbstractJSONHttpHandler<T> implements HttpHandler {
+public abstract class AbstractJsonHttpHandler<T> implements HttpHandler {
 
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     @Override
     public boolean handle(ChannelHandlerContext ctx, FullHttpRequest request) {
@@ -27,7 +21,7 @@ public abstract class AbstractJSONHttpHandler<T> implements HttpHandler {
         if (result == null) {
             return false;
         }
-        String json = gson.toJson(result);
+        String json = GSON.toJson(result);
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,

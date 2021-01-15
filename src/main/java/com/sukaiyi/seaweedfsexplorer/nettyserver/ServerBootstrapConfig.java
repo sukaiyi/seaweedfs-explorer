@@ -20,15 +20,15 @@ import java.util.function.Supplier;
 @Slf4j
 public class ServerBootstrapConfig {
 
-    private static final int port = 35672;
+    private static final int PORT = 35672;
 
     public ServerBootstrap httpServerBootstrap() {
         return setupServer(HttpChannelInitializer::new, future -> {
             if (future.isSuccess()) {
-                log.info("httpServer start at port {} success.\n visit http://127.0.0.1:{}/index.html", port, port);
+                log.info("httpServer start at port {} success.\n visit http://127.0.0.1:{}/index.html", PORT, PORT);
             } else {
                 Throwable cause = future.cause();
-                log.error("httpServer start at port {} failed", port, cause);
+                log.error("httpServer start at port {} failed", PORT, cause);
             }
         });
     }
@@ -41,7 +41,7 @@ public class ServerBootstrapConfig {
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE);
-        serverBootstrap.bind(port).addListener(resultConsumer::accept);
+        serverBootstrap.bind(PORT).addListener(resultConsumer::accept);
         return serverBootstrap;
     }
 }

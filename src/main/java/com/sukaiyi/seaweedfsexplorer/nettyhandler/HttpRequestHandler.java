@@ -18,7 +18,7 @@ import static io.netty.handler.codec.http.HttpUtil.is100ContinueExpected;
  */
 public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final Map<String, HttpHandler> handlers = new HashMap<>();
+    private static final Map<String, HttpHandler> HANDLERS = new HashMap<>();
 
     static {
         Properties properties = new Properties();
@@ -34,7 +34,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
                 Class<?> clazz = Class.forName(key);
                 Object obj = clazz.newInstance();
                 if(obj instanceof HttpHandler){
-                    handlers.put(value, (HttpHandler) obj);
+                    HANDLERS.put(value, (HttpHandler) obj);
                 }
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
@@ -48,11 +48,11 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
             ctx.write(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE));
         }
         String uri = request.uri();
-        Set<String> patterns = handlers.keySet();
+        Set<String> patterns = HANDLERS.keySet();
         boolean handled = false;
         for (String pattern : patterns) {
             if (uri.matches(pattern)) {
-                handled = handlers.get(pattern).handle(ctx, request);
+                handled = HANDLERS.get(pattern).handle(ctx, request);
                 break;
             }
         }

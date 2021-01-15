@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Application {
 
-    /**
+    /*
      * 该 static 块引用一些运行时需要的 Class， 以避免他们在打包时被 maven-shade-plugin 删除（配置了minimizeJar=true）
      */
     static {
