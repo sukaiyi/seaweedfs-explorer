@@ -55,7 +55,7 @@ public class DatFileHttpHandler extends AbstractJsonHttpHandler<DatFileHttpHandl
         String volumeId = Optional.of(fileName).map(e -> e.substring(0, e.lastIndexOf(".dat"))).orElse("");
         List<DatFileModelForLayUI> data = total.stream()
                 .sorted(ComparatorFactory.build(sortBy, order))
-                .skip((page - 1) * limit)
+                .skip((long) (page - 1) * limit)
                 .limit(limit)
                 .map(this::convert)
                 .peek(e -> e.setFileId(volumeId + "," + e.getFileId()))
@@ -78,6 +78,7 @@ public class DatFileHttpHandler extends AbstractJsonHttpHandler<DatFileHttpHandl
         ret.setPairs(datFileModel.getPairs());
         ret.setCheckSum(datFileModel.getCheckSum());
         ret.setMime(datFileModel.getMime());
+        ret.setSupportPreview(ContentTypeUtils.SUPPORT_PREVIEW.contains(datFileModel.getMime()));
         ret.setTtl(Arrays.toString(datFileModel.getTtl()));
         LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(datFileModel.getLastModified(), 0, ZoneOffset.ofHours(0));
         String lastModified = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(localDateTime);
@@ -106,6 +107,7 @@ public class DatFileHttpHandler extends AbstractJsonHttpHandler<DatFileHttpHandl
         private byte flags;
         private String name;
         private String mime;
+        private Boolean supportPreview;
         private String pairs;
         private String lastModified;
         private String ttl;

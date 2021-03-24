@@ -1,14 +1,16 @@
 package com.sukaiyi.seaweedfsexplorer.utils;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author sukaiyi
  */
 public class ContentTypeUtils {
 
+    public static final Set<String> SUPPORT_PREVIEW = new HashSet<>(Arrays.asList(
+            "text/plain", "image/jpeg", "application/x-jpg", "text/html", "video/mpeg4", "text/xml", "application/pdf", "application/json"
+    ));
 
     private static final String UNKNOWN = "application/octet-stream";
 

@@ -16,8 +16,14 @@
 </div>
 
 <script type="text/html" id="fileIdTpl">
-    <a href="/download?file={{d.datFile}}&id={{d.id}}" target="_blank"
+    {{# if(d.supportPreview) { }}
+    <a href="javascript:void(0);"
+       onclick="openLayer('{{d.name}}','/download?file={{d.datFile}}&id={{d.id}}')"
        class="layui-table-link">{{d.fileId}}</a>
+    {{# } else { }}
+    <a href="/download?file={{d.datFile}}&id={{d.id}}" target="_blank" download="{{d.name}}"
+       class="layui-table-link">{{d.fileId}}</a>
+    {{# }}}
 </script>
 
 <script>
